@@ -17,7 +17,8 @@ const currency = {
     VND: '越南盾',
     MYR: '馬來幣',
     CNY: '人民幣',
-    RUB: '盧布'
+    RUB: '盧布',
+    USD: '美元'
 }
 
 export default currency

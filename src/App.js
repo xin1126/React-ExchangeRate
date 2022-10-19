@@ -12,21 +12,16 @@ const App = () => {
   const getExchange = async () => {
     try {
       const data = [];
-      const res = await axios.get('https://cors-anywhere.herokuapp.com/https://tw.rter.info/capi.php');
-      Object.keys(res.data).forEach((item) => {
+      const res = await axios.get('https://api.exchangerate-api.com/v4/latest/TWD');
+      Object.keys(res.data.rates).forEach((item) => {
         Object.keys(currency).forEach((key) => {
-          if (item === `USD${key}`) {
-            const exrate = 1 / (res.data.USDTWD.Exrate / 1000 * res.data[item].Exrate)
+          if (item === key) {
             data.push({
               name: currency[key],
-              money: key === 'VND' || key === 'IDR' ? exrate.toFixed(4) : exrate.toFixed(2)
+              money: res.data.rates[key]
             });
           }
         })
-      });
-      data.unshift({
-        name: '美金',
-        money: res.data.USDTWD.Exrate
       });
       setInitExchange(data);
       setNewExchange(data);
@@ -40,13 +35,9 @@ const App = () => {
   const updateExchange = () => {
     if (!money) return alert('請輸入數值');
     const data = JSON.parse(JSON.stringify(initExchange));
+    if (+money === 1) return setNewExchange(initExchange);
     data.forEach((item) => {
-      const num = String((item.money * money)).split('');
-      if (!num.includes('.')) {
-        item.money = num.join('');
-      } else {
-        item.money = item.name === '越南盾' || item.name === '印尼幣' ? (+num.join('')).toFixed(4) : (+num.join('')).toFixed(2) * 1
-      }
+      item.money = (item.money * money).toFixed(2);
     });
     setNewExchange(data);
   };
@@ -56,8 +47,8 @@ const App = () => {
   }, []);
   return (
     <div className="min-h-screen bg-slate-800 flex justify-center items-center">
-      <div className='a mr-16'>
-        <h2 className='text-center text-2xl text-white font-bold mb-5'>原始匯率</h2>
+      <div className='mr-16'>
+        <h2 className='text-center text-2xl text-white font-bold mb-5'>原始匯率 $1臺幣可兌換金額</h2>
         <div className='flex'>
           <div className="mr-5">
             <Table data={[...initExchange].splice(0, 10)} />
@@ -67,7 +58,7 @@ const App = () => {
       </div>
       <div>
         <div className='flex items-center justify-center mb-5'>
-          <Input money={money} updateMoney={updateMoney} type="number" layout="flex">更改匯率</Input>
+          <Input money={money} updateMoney={updateMoney} type="number" layout="flex">更改匯率 $臺幣</Input>
           <button
             className='bg-emerald-600 hover:bg-emerald-800 text-white px-5 py-2 rounded-lg ml-2'
             onClick={updateExchange}
