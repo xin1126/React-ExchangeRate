@@ -3,8 +3,10 @@ import axios from 'axios';
 import currency from './currency';
 import Table from './components/Table';
 import Input from './components/Input';
+import CurrencyConvert from './components/CurrencyConvert'
 
 const App = () => {
+  const [initData, setInitData] = useState([]);
   const [initExchange, setInitExchange] = useState([]);
   const [newExchange, setNewExchange] = useState([]);
   const [money, setMoney] = useState(1);
@@ -23,6 +25,7 @@ const App = () => {
           }
         })
       });
+      setInitData(res.data.rates);
       setInitExchange(data);
       setNewExchange(data);
     } catch (error) {
@@ -46,31 +49,35 @@ const App = () => {
     getExchange();
   }, []);
   return (
-    <div className="min-h-screen bg-slate-800 flex justify-center items-center">
-      <div className='mr-16'>
-        <h2 className='text-center text-2xl text-white font-bold mb-5'>原始匯率 $1臺幣可兌換金額</h2>
-        <div className='flex'>
-          <div className="mr-5">
-            <Table data={[...initExchange].splice(0, 10)} />
+    <div className="min-h-screen bg-slate-800 flex flex-col justify-center items-center">
+      <div className='flex xl:flex-row flex-col justify-center items-center'>
+        <CurrencyConvert initData={initData} />
+        <div className='xl:mr-16'>
+          <h2 className='text-center text-2xl text-white font-bold mb-5'>原始匯率 $1臺幣可兌換金額</h2>
+          <div className='sm:flex'>
+            <div className="sm:mr-5">
+              <Table data={[...initExchange].splice(0, 10)} />
+            </div>
+            <Table data={[...initExchange].splice(10, initExchange.length)} />
           </div>
-          <Table data={[...initExchange].splice(10, initExchange.length)} />
+        </div>
+        <div>
+          <div className='flex sm:items-center items-end justify-center mb-5'>
+            <Input money={money} updateMoney={updateMoney} type="number" layout="flex">更改匯率 $臺幣</Input>
+            <button
+              className='bg-emerald-600 hover:bg-emerald-800 text-white px-5 py-2 rounded-lg ml-2'
+              onClick={updateExchange}
+            >換算</button>
+          </div>
+          <div className='sm:flex'>
+            <div className="sm:mr-5">
+              <Table data={[...newExchange].splice(0, 10)} />
+            </div>
+            <Table data={[...newExchange].splice(10, newExchange.length)} />
+          </div>
         </div>
       </div>
-      <div>
-        <div className='flex items-center justify-center mb-5'>
-          <Input money={money} updateMoney={updateMoney} type="number" layout="flex">更改匯率 $臺幣</Input>
-          <button
-            className='bg-emerald-600 hover:bg-emerald-800 text-white px-5 py-2 rounded-lg ml-2'
-            onClick={updateExchange}
-          >換算</button>
-        </div>
-        <div className='flex'>
-          <div className="mr-5">
-            <Table data={[...newExchange].splice(0, 10)} />
-          </div>
-          <Table data={[...newExchange].splice(10, newExchange.length)} />
-        </div>
-      </div>
+      <p className='text-white text-center xl:mb-0 mb-5 px-5'>相關資料僅供參考，不代表實際交易價格。實際交易價格以各銀行實際交易時之價格為準。</p>
     </div>
   );
 };

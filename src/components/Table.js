@@ -1,7 +1,7 @@
 const Table = ({ data }) => {
     return (
         <div className="overflow-x-auto relative shadow-md rounded-lg mb-10">
-            <table className="text-sm text-left text-gray-500 dark:text-gray-400 w-64 rounded">
+            <table className="text-sm text-left text-gray-500 dark:text-gray-400 sm:w-64 w-full px-10 rounded">
                 <thead className="text-xs text-gray-700 uppercase bg-gray-300 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
                         <th scope="col" className="py-3 px-6 text-lg">

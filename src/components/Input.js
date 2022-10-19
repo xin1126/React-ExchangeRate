@@ -1,8 +1,8 @@
 const Input = ({ money, updateMoney, type, layout, children }) => {
-    layout = layout === 'flex' ? 'flex items-center' : layout
+    layout = layout === 'flex' ? 'sm:flex items-center' : layout
     return (
         <div className={layout}>
-            <label className="text-2xl text-end mr-2 font-bold w-[150px] text-white" htmlFor="grid-first-name">
+            <label className={`text-2xl text-end mr-2 font-bold w-[180px] text-white ${children ? "" : "hidden"}`}>
                 {children}
             </label>
             <input
@@ -11,7 +11,7 @@ const Input = ({ money, updateMoney, type, layout, children }) => {
                 value={money}
                 onChange={updateMoney}
             />
-        </div>
+        </div >
     )
 }
 
